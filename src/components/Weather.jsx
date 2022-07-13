@@ -11,24 +11,25 @@ const Weather = () => {
 
   const searchLocation = () => {
     isLoaded(true);
-    const resp = axios
-      .get(api)
-      .then((res) => {
-        setWeather(res);
-      })
-      .catch((e) => setErrormes(true));
-    isLoaded(false);
-    setErrormes(false);
+    setTimeout(() => {
+      const resp = axios
+        .get(api)
+        .then((res) => {
+          setWeather(res.data);
+        })
+        .catch((e) => setErrormes(true));
+      isLoaded(false);
+      setErrormes(false);
+    }, 1500);
   };
 
+  console.log(weather);
   return (
     <>
       <div className={style.container}>
         <div className={style.top}>
-          <div className={style.location}>
-            {weather.location ? <p>{weather.location.name}</p> : null}
-          </div>
-          <div className={style.temp}>
+          <div>{weather.location ? <p>{weather.location.name}</p> : null}</div>
+          <div>
             {weather.current ? (
               <h1>{Math.ceil(weather.current.temp_c)} °C</h1>
             ) : null}
@@ -38,26 +39,20 @@ const Weather = () => {
           </div>
         </div>
         <div className={style.bottom}>
-          <div className={style.feels}>
+          <div>
             {weather.current ? (
-              <p className={style.bold}>
-                {Math.ceil(weather.current.feelslike_c)} °C
-              </p>
+              <p>{Math.ceil(weather.current.feelslike_c)} °C</p>
             ) : null}
 
             <p>Feels like</p>
           </div>
-          <div className={style.humidity}>
-            {weather.current ? (
-              <p className={style.bold}>{weather.current.humidity} %</p>
-            ) : null}
+          <div>
+            {weather.current ? <p>{weather.current.humidity} %</p> : null}
 
             <p>Humidity</p>
           </div>
-          <div className={style.wind}>
-            {weather.current ? (
-              <p className={style.bold}>{weather.current.wind_kph} kph</p>
-            ) : null}
+          <div>
+            {weather.current ? <p>{weather.current.wind_kph} kph</p> : null}
             <p>Wind speed</p>
           </div>
         </div>
