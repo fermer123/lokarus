@@ -1,27 +1,29 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import style from './Weather.module.scss';
 
 const Weather = () => {
   const [weather, setWeather] = useState({});
+  const [loaded, isLoaded] = useState(false);
+  const [errormes, setErrormes] = useState(false);
   const location = 'Chelyabinsk';
   const api = `http://api.weatherapi.com/v1/current.json?key=6f82136fec71416b8f6113446220406&&q=${location}&aqi=no`;
 
-  const searchLocation = async () => {
-    const resp = await axios.get(api);
-    setWeather(resp);
+  const searchLocation = () => {
+    isLoaded(true);
+    const resp = axios
+      .get(api)
+      .then((res) => {
+        setWeather(res);
+      })
+      .catch((e) => setErrormes(true));
+    isLoaded(false);
+    setErrormes(false);
   };
 
   return (
     <>
-      <div>
-        <button
-          className='px-4 py-2  bg-blue-500  rounded-lg'
-          onClick={searchLocation}
-        >
-          click me
-        </button>
-      </div>
-      {/* <div className={style.container}>
+      <div className={style.container}>
         <div className={style.top}>
           <div className={style.location}>
             {weather.location ? <p>{weather.location.name}</p> : null}
@@ -59,7 +61,15 @@ const Weather = () => {
             <p>Wind speed</p>
           </div>
         </div>
-      </div> */}
+      </div>
+      <div>
+        <div className='px-4 py-2 mt-10 text-center mx-auto bg-sky-300  rounded-lg max-w-[200px]'>
+          <button disabled={loaded} onClick={searchLocation}>
+            click me
+          </button>
+        </div>
+      </div>
+      {errormes && <div>Error</div>}
     </>
   );
 };
